@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Advanced Crypto Dashboard</title>
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
 
-<div class="toolbar">
+<!-- Desktop Toolbar (hidden on mobile) -->
+<div class="toolbar desktop-only">
     <input type="text" id="symbolInput" placeholder="BTCUSDT" onkeydown="handleInputKeydown(event)"/>
     <button onclick="addSymbol()">Add</button>
     <button onclick="clearSymbols()">Clear</button>
@@ -35,16 +37,97 @@
     <div class="symbol-list" id="symbolList"></div>
 </div>
 
+<!-- Mobile Menu Button -->
+<button id="mobileMenuButton" class="mobile-menu-button">
+    <span class="menu-icon">☰</span>
+</button>
+
+<!-- Mobile Settings Popup -->
+<div id="mobileSettingsPopup" class="mobile-settings-popup">
+    <div class="mobile-settings-content">
+        <div class="mobile-settings-header">
+            <h2>Settings</h2>
+            <button class="close-settings" onclick="mobileSettings.closeSettings()">×</button>
+        </div>
+        
+        <div class="mobile-settings-section">
+            <h3>Symbols</h3>
+            <div class="mobile-symbol-input-wrapper">
+                <input type="text" id="mobileSymbolInput" placeholder="BTCUSDT" onkeydown="handleInputKeydown(event)" />
+                <button class="icon-btn" onclick="addSymbol()" title="Add">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" onclick="clearSymbols()" title="Clear All">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="mobileSymbolsList" class="mobile-symbols-list"></div>
+        </div>
+
+        <div class="mobile-settings-section">
+            <h3>Display Settings</h3>
+
+            <div class="mobile-select-group">
+                <label>Interval:</label>
+                <select id="mobileIntervalSelect" onchange="changeInterval()">
+                    <option value="1">1m</option>
+                    <option value="3">3m</option>
+                    <option value="5">5m</option>
+                    <option value="15">15m</option>
+                    <option value="30">30m</option>
+                    <option value="60">1h</option>
+                    <option value="240">4h</option>
+                    <option value="D">1D</option>
+                </select>
+            </div>
+
+            <div class="mobile-grid-settings">
+                <div class="mobile-input-group">
+                    <label>Columns:</label>
+                    <div class="input-plus-minus">
+                        <button type="button" class="icon-btn" onclick="changeMobileCols(-1)">-</button>
+                        <input type="number" id="mobileColsInput" min="1" value="2" onchange="updateGridSize()">
+                        <button type="button" class="icon-btn" onclick="changeMobileCols(1)">+</button>
+                    </div>
+                </div>
+                <div class="mobile-input-group">
+                    <label>Rows:</label>
+                    <div class="input-plus-minus">
+                        <button type="button" class="icon-btn" onclick="changeMobileRows(-1)">-</button>
+                        <input type="number" id="mobileRowsInput" min="1" value="2" onchange="updateGridSize()">
+                        <button type="button" class="icon-btn" onclick="changeMobileRows(1)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mobile-zoom-controls-row">
+                <button class="icon-btn" onclick="zoomOut()" aria-label="Zoom out">-</button>
+                <span class="zoom-label">Zoom</span>
+                <button class="icon-btn" onclick="zoomIn()" aria-label="Zoom in">+</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="scaleContainer">
     <div class="grid-wrapper">
         <div id="widgetGrid" class="grid"></div>
     </div>
 </div>
 
-<div id="paginator" class="paginator" style="display:none;">
-    <button onclick="prevPage()">&lt;</button>
+<!-- Paginator -->
+<div id="paginator" class="paginator">
+    <button class="page-btn" onclick="prevPage()" aria-label="Previous page">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
     <span id="pageInfo">Page 1</span>
-    <button onclick="nextPage()">&gt;</button>
+    <button class="page-btn" onclick="nextPage()" aria-label="Next page">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
 </div>
 
 <div id="widgetPopup" class="widget-popup" style="display: none;">
@@ -56,5 +139,6 @@
 
 <script src="https://s3.tradingview.com/tv.js"></script>
 <script src="assets/js/app.js"></script>
+<script src="assets/js/mobile-settings.js"></script>
 </body>
 </html>

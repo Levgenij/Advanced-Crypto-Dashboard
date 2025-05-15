@@ -119,9 +119,16 @@ rowsInput.value = initialGrid.rows;
 
 // Zoom functionality
 function applyZoom() {
+    const toolbar = document.querySelector('.toolbar');
+    const toolbarHeight = toolbar ? toolbar.offsetHeight : 0;
+    const windowHeight = window.innerHeight;
+    const containerHeight = windowHeight - toolbarHeight;
+
     scaleContainer.style.transform = `scale(${zoomLevel})`;
     scaleContainer.style.width = `${100 / zoomLevel}vw`;
-    scaleContainer.style.height = `${100 / zoomLevel}vh`;
+    const isMobile = window.innerWidth <= 768;
+    const heightAdjustment = isMobile ? 60 : 0;
+    scaleContainer.style.height = `${((containerHeight - heightAdjustment) / windowHeight) * (100 / zoomLevel)}vh`;
     localStorage.setItem('zoomLevel', zoomLevel);
 }
 
@@ -285,8 +292,8 @@ function renderWidgets() {
             theme: "dark",
             style: "1",
             locale: "en",
-            hide_side_toolbar: !showSideToolbar,
-            hide_top_toolbar: !showTopToolbar,
+            hide_side_toolbar: !showSideToolbar || window.innerWidth <= 768,
+            hide_top_toolbar: !showTopToolbar || window.innerWidth <= 768,
             allow_symbol_change: true,
             save_image: false,
             studies: showMACD ? ["STD;MACD"] : [],
@@ -296,9 +303,18 @@ function renderWidgets() {
         });
     });
 
-    paginator.style.display = totalPages > 1 ? 'flex' : 'none';
+    // Update pagination display
+    const shouldShowPaginator = totalPages > 1;
+    paginator.style.display = shouldShowPaginator ? 'flex' : 'none';
     pageInfo.textContent = `Page ${currentPage + 1} / ${totalPages}`;
-    renderSymbolList();
+
+    // Update symbol list
+    if (window.innerWidth <= 768 && window.mobileSettings) {
+        window.mobileSettings.renderSymbolsList();
+    } else {
+        renderSymbolList();
+    }
+
     updateButtonStates();
     saveSettings();
     applyZoom();
@@ -348,10 +364,82 @@ function changeInterval() {
     updateUrlParams();
 }
 
-// Initialize the application
+// Mobile-specific functions
+function updateGridSize() {
+    if (window.innerWidth <= 768) {
+        colsInput.value = document.getElementById('mobileColsInput').value;
+        rowsInput.value = document.getElementById('mobileRowsInput').value;
+    }
+    renderWidgets();
+}
+
+// Add touch event handlers for mobile
+function setupTouchHandlers() {
+    if (window.innerWidth <= 768) {
+        // Add touch handlers for widget containers
+        document.querySelectorAll('.widget-container').forEach(container => {
+            container.addEventListener('touchstart', (e) => {
+                const symbol = container.id.split('-')[1];
+                if (symbol) {
+                    openPopup(symbols[parseInt(symbol)]);
+                }
+            });
+        });
+    }
+}
+
+// Update initialization
 document.addEventListener('DOMContentLoaded', () => {
     const initialGrid = getInitialGridSize();
     colsInput.value = initialGrid.cols;
     rowsInput.value = initialGrid.rows;
+    // Set mobile inputs if they exist
+    const mobileColsInput = document.getElementById('mobileColsInput');
+    const mobileRowsInput = document.getElementById('mobileRowsInput');
+    if (mobileColsInput && mobileRowsInput) {
+        mobileColsInput.value = initialGrid.cols;
+        mobileRowsInput.value = initialGrid.rows;
+    }
+
     renderWidgets();
-}); 
+    setupTouchHandlers();
+});
+
+// Handle window resize
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+            if (window.mobileSettings) {
+                window.mobileSettings.updateSettingsUI();
+            }
+        }
+        renderWidgets();
+    }, 250);
+});
+
+// Mobile + / - controls for columns and rows
+function changeMobileCols(delta) {
+    const input = document.getElementById('mobileColsInput');
+    let value = parseInt(input.value) || 1;
+    value += delta;
+    if (value < 1) value = 1;
+    if (value > 6) value = 6;
+    input.value = value;
+    colsInput.value = value;
+    updateGridSize();
+}
+
+function changeMobileRows(delta) {
+    const input = document.getElementById('mobileRowsInput');
+    let value = parseInt(input.value) || 1;
+    value += delta;
+    if (value < 1) value = 1;
+    if (value > 6) value = 6;
+    input.value = value;
+    rowsInput.value = value;
+    updateGridSize();
+} 

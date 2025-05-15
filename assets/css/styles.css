@@ -63,26 +63,6 @@ html, body {
     height: 100%;
 }
 
-.paginator {
-    display: block;
-    position: fixed;
-    bottom: 0;
-    text-align: center;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    padding: 5px;
-    background: rgba(34, 34, 34, 0.5);
-    opacity: 0.5;
-    transition: opacity 0.3s ease;
-}
-
-.paginator:hover {
-    opacity: 1;
-    background: rgba(34, 34, 34, 0.8);
-}
-
 input, button, select {
     padding: 2px 5px;
     border: none;
@@ -121,8 +101,8 @@ button.active {
 
 .close-popup {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 5px;
+    right: 5px;
     width: 30px;
     height: 30px;
     font-size: 20px;
@@ -133,4 +113,421 @@ button.active {
 #popupWidgetContainer {
     width: 100%;
     height: 100%;
+}
+
+/* Mobile Menu Button */
+.mobile-menu-button {
+    display: none;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 54px;
+    height: 54px;
+    border-radius: 5px;
+    /* background: #28a745; */
+    background: #444;
+    color: white;
+    font-size: 24px;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    border: none;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.menu-icon {
+    display: block;
+    text-align: center;
+}
+
+/* Mobile Settings Popup */
+.mobile-settings-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 1001;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.mobile-settings-content {
+    background: #1e222d;
+    padding: 6px 16px 16px 16px;
+    border-radius: 8px;
+    max-width: 95%;
+    margin: 10px auto;
+}
+
+.mobile-settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #333;
+}
+
+.mobile-settings-header h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.5em;
+}
+
+.close-settings {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 28px;
+    padding: 0 8px;
+    cursor: pointer;
+    border-radius: 5px;
+    min-width: 40px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-settings-section {
+    margin-bottom: 20px;
+}
+
+.mobile-settings-section h3 {
+    color: #fff;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.mobile-symbol-input {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.mobile-symbol-input input {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 5px;
+    background: #444;
+    color: #fff;
+    border: none;
+}
+
+.mobile-symbols-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.mobile-symbol-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 8px 8px 12px;
+    background: #2a2e39;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    gap: 8px;
+}
+
+.mobile-symbol-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.mobile-symbol-controls button {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    font-size: 16px;
+}
+
+.mobile-toggle-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.mobile-toggle-group button {
+    padding: 12px 0;
+    font-size: 16px;
+    border-radius: 5px;
+    min-width: 120px;
+    min-height: 44px;
+}
+
+.mobile-select-group{
+    margin-bottom: 20px;
+}
+
+
+.mobile-select-group select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    margin-top: 5px;
+    border-radius: 5px;
+    background: #444;
+    color: #fff;
+    border: none;
+}
+
+.mobile-grid-settings {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 16px;
+    margin-bottom: 20px;
+}
+
+.mobile-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.mobile-input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1em;
+    color: #fff;
+    font-weight: 500;
+    text-align: left;
+}
+
+.mobile-input-group input {
+    padding: 10px;
+    font-size: 16px;
+}
+
+.mobile-zoom-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 16px;
+    margin-bottom: 0;
+}
+
+.mobile-zoom-controls .icon-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+}
+
+.zoom-label {
+    flex: 1 1 auto;
+    text-align: center;
+    color: #fff;
+    font-size: 1.1em;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+/* Paginator */
+.paginator {
+    display: none;
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(34, 34, 34, 0.9);
+    padding: 5px;
+    border-radius: 5px;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.5;
+}
+
+#pageInfo{
+    padding: 0 5px;
+}
+
+.page-btn {
+    width: 25px;
+    height: 25px;
+    border-radius: 3px;
+    padding: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none !important;
+    }
+
+    .mobile-menu-button {
+        display: block;
+    }
+
+    .close-popup {
+        min-height: 30px;
+    }
+
+    .page-btn {
+        width: 44px;
+        height: 44px;
+        /* border-radius: 50%; */
+    }
+
+    #widgetGrid {
+        gap: 2px;
+    }
+
+    .widget-container {
+        min-height: 200px;
+    }
+
+    /* Adjust touch targets for mobile */
+    button, 
+    input[type="text"],
+    select {
+        min-height: 44px;
+        font-size: 16px;
+    }
+
+    /* Prevent zoom on input focus */
+    input[type="text"],
+    input[type="number"],
+    select {
+        font-size: 16px !important;
+    }
+}
+
+/* Prevent pull-to-refresh on mobile */
+body {
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.input-plus-minus {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.input-plus-minus button {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    background: #444;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    touch-action: manipulation;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.input-plus-minus button:active {
+    background: #28a745;
+}
+
+.input-plus-minus input[type="number"] {
+    width: 60px;
+    text-align: center;
+    font-size: 18px;
+    padding: 8px;
+    border-radius: 5px;
+    background: #444;
+    color: #fff;
+    border: none;
+}
+
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #444;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    transition: background 0.2s;
+}
+.icon-btn:active, .icon-btn:focus {
+    background: #28a745;
+    outline: none;
+}
+.icon-btn svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+.mobile-symbol-input-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 8px 8px 12px;
+    background: #2a2e39;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    gap: 8px;
+}
+
+.mobile-symbol-input-wrapper input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    flex: 1;
+    padding: 0;
+    outline: none;
+}
+
+.input-plus-minus .icon-btn,
+.mobile-zoom-controls-row .icon-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+    min-width: 48px;
+    min-height: 48px;
+}
+
+.input-plus-minus input[type="number"] {
+    width: 48px;
+    min-width: 48px;
+    max-width: 48px;
+    text-align: center;
+    font-size: 18px;
+    padding: 8px;
+    height: 32px;
+    border-radius: 5px;
+    background: #444;
+    color: #fff;
+    border: none;
+}
+
+.mobile-zoom-controls-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.zoom-label {
+    min-width: 80px;
+    text-align: center;
+    color: #fff;
+    font-size: 1.1em;
+    font-weight: 500;
+    letter-spacing: 1px;
 } 
