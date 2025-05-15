@@ -119,8 +119,8 @@ button.active {
 .mobile-menu-button {
     display: none;
     position: fixed;
-    bottom: 10px;
-    right: 10px;
+    bottom: 5px;
+    right: 5px;
     width: 54px;
     height: 54px;
     border-radius: 5px;
@@ -133,6 +133,7 @@ button.active {
     border: none;
     cursor: pointer;
     touch-action: manipulation;
+    z-index: 1002;
 }
 
 .menu-icon {
@@ -147,7 +148,6 @@ button.active {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
     background: rgba(0,0,0,0.9);
     z-index: 1001;
     overflow-y: auto;
@@ -156,10 +156,18 @@ button.active {
 
 .mobile-settings-content {
     background: #1e222d;
-    padding: 6px 16px 16px 16px;
+    padding: 6px 16px 100px 16px;
     border-radius: 8px;
     max-width: 95%;
     margin: 10px auto;
+    height: 100vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none; 
+}
+
+.mobile-settings-content::-webkit-scrollbar {
+    display: none;
 }
 
 .mobile-settings-header {
@@ -195,6 +203,11 @@ button.active {
 .mobile-settings-section {
     margin-bottom: 20px;
 }
+
+.mobile-settings-section:last-child {
+    margin-bottom: 80px;
+}
+
 
 .mobile-settings-section h3 {
     color: #fff;
@@ -332,7 +345,7 @@ button.active {
 .paginator {
     display: none;
     position: fixed;
-    bottom: 10px;
+    bottom: 5px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(34, 34, 34, 0.9);
@@ -465,6 +478,10 @@ body {
     background: #28a745;
     outline: none;
 }
+.icon-btn.no-active-effect:active,
+.icon-btn.no-active-effect:focus {
+    background: #444;
+}
 .icon-btn svg {
     display: block;
     width: 20px;
@@ -502,9 +519,9 @@ body {
 }
 
 .input-plus-minus input[type="number"] {
-    width: 48px;
-    min-width: 48px;
-    max-width: 48px;
+    width: 32px;
+    min-width: 32px;
+    max-width: 32px;
     text-align: center;
     font-size: 18px;
     padding: 8px;

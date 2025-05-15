@@ -1,4 +1,11 @@
+// Constants
+const MOBILE_BREAKPOINT = 768;
+
 // URL and Storage management
+function isMobile() {
+    return window.innerWidth <= MOBILE_BREAKPOINT;
+}
+
 function getUrlParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
@@ -59,7 +66,7 @@ function getSetting(key, defaultValue) {
 }
 
 // State management
-let symbols = getSetting('symbols', ["BTCUSDT", "ETHUSDT", "ETHUSDT", "SOLUSDT", "DOGEUSDT"]);
+let symbols = getSetting('symbols', ["BTCUSDT", "XRPUSDT", "ETHUSDT", "SOLUSDT", "DOGEUSDT"]);
 let showMACD = getSetting('macd', true);
 let showSideToolbar = getSetting('sideToolbar', true);
 let showTopToolbar = getSetting('topToolbar', true);
@@ -69,7 +76,6 @@ let currentPage = 0;
 
 // Get initial columns and rows based on screen width and saved settings
 function getInitialGridSize() {
-    const isMobile = window.innerWidth <= 768;
     const savedCols = localStorage.getItem('gridCols');
     const savedRows = localStorage.getItem('gridRows');
     
@@ -82,7 +88,7 @@ function getInitialGridSize() {
     }
     
     // Default values for mobile if no custom settings
-    if (isMobile) {
+    if (isMobile()) {
         return {
             cols: 1,
             rows: 4
@@ -126,8 +132,7 @@ function applyZoom() {
 
     scaleContainer.style.transform = `scale(${zoomLevel})`;
     scaleContainer.style.width = `${100 / zoomLevel}vw`;
-    const isMobile = window.innerWidth <= 768;
-    const heightAdjustment = isMobile ? 60 : 0;
+    const heightAdjustment = isMobile() ? 65 : 0;
     scaleContainer.style.height = `${((containerHeight - heightAdjustment) / windowHeight) * (100 / zoomLevel)}vh`;
     localStorage.setItem('zoomLevel', zoomLevel);
 }
@@ -197,9 +202,18 @@ function closePopup() {
 
 function renderSymbolList() {
     symbolList.innerHTML = '';
+    const cols = parseInt(colsInput.value);
+    const rows = parseInt(rowsInput.value);
+    const pageSize = cols * rows;
+    const startIndex = currentPage * pageSize;
+    const endIndex = startIndex + pageSize;
+
     symbols.forEach((s, index) => {
         const tag = document.createElement('div');
         tag.className = 'symbol-tag';
+        if (index < startIndex || index >= endIndex) {
+            tag.classList.add('inactive');
+        }
         tag.textContent = s;
         tag.onmouseenter = () => tag.classList.add('hovered');
         tag.onmouseleave = () => tag.classList.remove('hovered');
@@ -237,17 +251,35 @@ function moveSymbolDown(index) {
 
 function addSymbol() {
     const input = document.getElementById('symbolInput');
-    const newSymbol = input.value.trim().toUpperCase();
+    const mobileInput = document.getElementById('mobileSymbolInput');
+    const newSymbol = (input?.value || mobileInput?.value || '').trim().toUpperCase();
+
     if (newSymbol && !symbols.includes(newSymbol)) {
         symbols.push(newSymbol);
         renderWidgets();
         updateUrlParams();
+        
+        // Clear input based on device
+        if (isMobile() && mobileInput) {
+            mobileInput.value = '';
+            // Update mobile symbols list if mobile settings exist
+            if (window.mobileSettings) {
+                window.mobileSettings.renderSymbolsList();
+            }
+        } else if (input) {
+            input.value = '';
+        }
     }
-    input.value = '';
 }
 
 function handleInputKeydown(event) {
-    if (event.key === 'Enter') addSymbol();
+    if (event.key === 'Enter') {
+        addSymbol();
+        // Close mobile settings popup if it's open
+        if (isMobile() && window.mobileSettings) {
+            window.mobileSettings.closeSettings();
+        }
+    }
 }
 
 function removeSymbol(index) {
@@ -292,8 +324,8 @@ function renderWidgets() {
             theme: "dark",
             style: "1",
             locale: "en",
-            hide_side_toolbar: !showSideToolbar || window.innerWidth <= 768,
-            hide_top_toolbar: !showTopToolbar || window.innerWidth <= 768,
+            hide_side_toolbar: !showSideToolbar || isMobile(),
+            hide_top_toolbar: !showTopToolbar || isMobile(),
             allow_symbol_change: true,
             save_image: false,
             studies: showMACD ? ["STD;MACD"] : [],
@@ -309,7 +341,7 @@ function renderWidgets() {
     pageInfo.textContent = `Page ${currentPage + 1} / ${totalPages}`;
 
     // Update symbol list
-    if (window.innerWidth <= 768 && window.mobileSettings) {
+    if (isMobile() && window.mobileSettings) {
         window.mobileSettings.renderSymbolsList();
     } else {
         renderSymbolList();
@@ -366,7 +398,7 @@ function changeInterval() {
 
 // Mobile-specific functions
 function updateGridSize() {
-    if (window.innerWidth <= 768) {
+    if (isMobile()) {
         colsInput.value = document.getElementById('mobileColsInput').value;
         rowsInput.value = document.getElementById('mobileRowsInput').value;
     }
@@ -375,7 +407,7 @@ function updateGridSize() {
 
 // Add touch event handlers for mobile
 function setupTouchHandlers() {
-    if (window.innerWidth <= 768) {
+    if (isMobile()) {
         // Add touch handlers for widget containers
         document.querySelectorAll('.widget-container').forEach(container => {
             container.addEventListener('touchstart', (e) => {
@@ -410,9 +442,7 @@ let resizeTimeout;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
-
-        const isMobile = window.innerWidth <= 768;
-        if (isMobile) {
+        if (isMobile()) {
             if (window.mobileSettings) {
                 window.mobileSettings.updateSettingsUI();
             }

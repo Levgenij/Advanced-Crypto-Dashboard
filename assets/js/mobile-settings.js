@@ -1,10 +1,10 @@
 // Mobile Settings Management
 class MobileSettings {
     constructor() {
-        this.isMobile = window.innerWidth <= 768;
         this.settingsPopup = document.getElementById('mobileSettingsPopup');
         this.menuButton = document.getElementById('mobileMenuButton');
         this.symbolsList = document.getElementById('mobileSymbolsList');
+        this.symbolInput = document.getElementById('mobileSymbolInput');
         this.setupEventListeners();
     }
 
@@ -23,6 +23,16 @@ class MobileSettings {
                 this.closeSettings();
             }
         });
+
+        // Add input handling for mobile symbol input
+        if (this.symbolInput) {
+            this.symbolInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleInputKeydown(e);
+                }
+            });
+        }
     }
 
     toggleSettings() {
@@ -98,12 +108,7 @@ class MobileSettings {
         });
     }
 
-    updateSettingsUI() {
-        // Update toggle buttons
-        document.getElementById('mobileMACD').classList.toggle('active', showMACD);
-        document.getElementById('mobileSideToolbar').classList.toggle('active', showSideToolbar);
-        document.getElementById('mobileTopToolbar').classList.toggle('active', showTopToolbar);
-        
+    updateSettingsUI() {        
         // Update interval select
         document.getElementById('mobileIntervalSelect').value = selectedInterval;
         
