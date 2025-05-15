@@ -1,0 +1,14 @@
+{
+  "name": "advanced-crypto-dashboard",
+  "version": "1.0.0",
+  "description": "Advanced Crypto Dashboard with TradingView integration",
+  "scripts": {
+    "start": "concurrently \"http-server -p 8000 -o\" \"wait-on http://localhost:8000 && echo 'Server is ready!'\"",
+    "dev": "npm run start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "http-server": "^14.1.1",
+    "wait-on": "^7.2.0"
+  }
+} 
