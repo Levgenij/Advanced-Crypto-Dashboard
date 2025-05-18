@@ -121,6 +121,11 @@ class MobileSettings {
         if (typeof updateButtonStates === 'function') {
             updateButtonStates();
         }
+        // Update single page button state
+        const btnSinglePageMobile = document.getElementById('btnSinglePage_mobile');
+        if (btnSinglePageMobile) {
+            btnSinglePageMobile.classList.toggle('active', singlePageMode);
+        }
     }
 }
 

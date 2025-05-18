@@ -40,6 +40,7 @@
         <button id="btnMACD" class="toolbar-item" onclick="toggleMACD()">MACD</button>
         <button id="btnSideToolbar" class="toolbar-item" onclick="toggleSideToolbar()">Side</button>
         <button id="btnTopToolbar" class="toolbar-item" onclick="toggleTopToolbar()">Top</button>
+        <button id="btnSinglePage" class="toolbar-item" onclick="toggleSinglePageMode()">Single Page</button>
         <label>Interval:</label>
         <select id="intervalSelect" class="toolbar-item" onchange="changeInterval()">
             <option value="1">1m</option>
@@ -127,6 +128,11 @@
                         <option value="6M">6M</option>
                         <option value="12M">12M</option>
                     </select>
+                </div>
+
+                <div class="mobile-select-group two-col-grid">
+                    <label for="btnSinglePage_mobile">Single Page:</label>
+                    <button id="btnSinglePage_mobile" onclick="toggleSinglePageMode()">Single Page</button>
                 </div>
 
                 <div class="mobile-grid-settings">

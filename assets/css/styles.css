@@ -740,4 +740,21 @@ body {
 }
 .zoom-group .zoom-value:hover {
     background: #333232;
+}
+
+/* Single Page Mode: вертикальний скрол */
+.single-page-mode .grid-wrapper {
+    overflow-y: auto;
+    align-items: flex-start;
+    height: auto;
+}
+.single-page-mode .grid {
+    display: grid;
+    flex-direction: unset;
+    height: auto;
+    min-height: 0;
+}
+.single-page-mode .widget-container {
+    width: 100%;
+    flex: 0 0 auto;
 } 
