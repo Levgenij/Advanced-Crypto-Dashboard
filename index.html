@@ -60,8 +60,11 @@
         <input type="number" id="colsInput" class="toolbar-item" min="1" value="2" onchange="renderWidgets()">
         <label>Rows:</label>
         <input type="number" id="rowsInput" class="toolbar-item" min="1" value="2" onchange="renderWidgets()">
-        <button class="toolbar-item" onclick="zoomOut()">-</button>
-        <button class="toolbar-item" onclick="zoomIn()">+</button>
+        <div class="zoom-group">
+            <button class="toolbar-item" onclick="zoomOut()">-</button>
+            <span id="zoomValue" class="zoom-value">1.0</span>
+            <button class="toolbar-item" onclick="zoomIn()">+</button>
+        </div>
 
         <div class="symbol-list" id="symbolList"></div>
     </div>
@@ -145,10 +148,13 @@
                     </div>
                 </div>
 
-                <div class="mobile-zoom-controls-row">
-                    <button class="icon-btn" onclick="zoomOut()" aria-label="Zoom out">-</button>
-                    <span class="zoom-label">Zoom</span>
-                    <button class="icon-btn" onclick="zoomIn()" aria-label="Zoom in">+</button>
+                <div class="mobile-select-group two-col-grid">
+                    <label>Zoom:</label>
+                    <div class="zoom-group">
+                        <button class="icon-btn" onclick="zoomOut()" aria-label="Zoom out">-</button>
+                        <span class="zoom-value" id="mobileZoomValue">1.0</span>
+                        <button class="icon-btn" onclick="zoomIn()" aria-label="Zoom in">+</button>
+                    </div>
                 </div>
             </div>
         </div>

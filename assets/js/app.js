@@ -132,9 +132,14 @@ function applyZoom() {
 
     scaleContainer.style.transform = `scale(${zoomLevel})`;
     scaleContainer.style.width = `${100 / zoomLevel}vw`;
-    const heightAdjustment = isMobile() ? 65 : 0;
-    scaleContainer.style.height = `${((containerHeight - heightAdjustment) / windowHeight) * (100 / zoomLevel)}vh`;
+    scaleContainer.style.height = `${(containerHeight / windowHeight) * (100 / zoomLevel)}vh`;
     localStorage.setItem('zoomLevel', zoomLevel);
+
+    // Update zoom value indicators
+    const zoomValue = document.getElementById('zoomValue');
+    if (zoomValue) zoomValue.textContent = zoomLevel.toFixed(1);
+    const mobileZoomValue = document.getElementById('mobileZoomValue');
+    if (mobileZoomValue) mobileZoomValue.textContent = zoomLevel.toFixed(1);
 }
 
 function zoomIn() {
@@ -147,6 +152,30 @@ function zoomOut() {
     zoomLevel = Math.max(0.5, zoomLevel - 0.1);
     applyZoom();
     updateUrlParams();
+}
+
+// Zoom value click-to-reset handler
+function setupZoomValueReset() {
+    function resetZoomIfNeeded() {
+        if (zoomLevel !== 1) {
+            zoomLevel = 1;
+            applyZoom();
+            saveSettings();
+            updateUrlParams();
+        }
+    }
+    const zoomValue = document.getElementById('zoomValue');
+    if (zoomValue) {
+        zoomValue.title = 'Reset zoom';
+        zoomValue.style.cursor = 'pointer';
+        zoomValue.onclick = resetZoomIfNeeded;
+    }
+    const mobileZoomValue = document.getElementById('mobileZoomValue');
+    if (mobileZoomValue) {
+        mobileZoomValue.title = 'Reset zoom';
+        mobileZoomValue.style.cursor = 'pointer';
+        mobileZoomValue.onclick = resetZoomIfNeeded;
+    }
 }
 
 // Settings management
@@ -454,6 +483,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderWidgets();
     setupTouchHandlers();
+    setupZoomValueReset();
 });
 
 // Handle window resize
