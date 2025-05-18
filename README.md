@@ -46,7 +46,7 @@
 
 ## 🌐 Live Demo
 
-[🚀 Open Live Demo](https://levgenij.github.io)
+[🚀 Open Live Demo](https://levgenij.github.io/Advanced-Crypto-Dashboard/)
 
 ---
 
