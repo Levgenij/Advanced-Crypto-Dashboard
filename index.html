@@ -38,9 +38,10 @@
         <button class="toolbar-item" onclick="addSymbol()">Add</button>
         <button class="toolbar-item" onclick="clearSymbols()">Clear</button>
         <button id="btnMACD" class="toolbar-item" onclick="toggleMACD()">MACD</button>
+        <button id="btnVolume" class="toolbar-item" onclick="toggleVolume()">Volume</button>
         <button id="btnSideToolbar" class="toolbar-item" onclick="toggleSideToolbar()">Side</button>
         <button id="btnTopToolbar" class="toolbar-item" onclick="toggleTopToolbar()">Top</button>
-        <button id="btnSinglePage" class="toolbar-item" onclick="toggleSinglePageMode()">Single Page</button>
+        <button id="btnSingleMode" class="toolbar-item" onclick="toggleSingleMode()">Single Mode</button>
         <label>Interval:</label>
         <select id="intervalSelect" class="toolbar-item" onchange="changeInterval()">
             <option value="1">1m</option>
@@ -110,6 +111,10 @@
                     <label for="btnMACD_mobile">Indicators:</label>
                     <button id="btnMACD_mobile" onclick="toggleMACD()">MACD</button>
                 </div>
+                <div class="mobile-select-group two-col-grid">
+                    <label for="btnVolume_mobile">Volume:</label>
+                    <button id="btnVolume_mobile" onclick="toggleVolume()">Volume</button>
+                </div>
 
                 <div class="mobile-select-group two-col-grid">
                     <label for="mobileIntervalSelect">Interval:</label>
@@ -131,8 +136,8 @@
                 </div>
 
                 <div class="mobile-select-group two-col-grid">
-                    <label for="btnSinglePage_mobile">Single Page:</label>
-                    <button id="btnSinglePage_mobile" onclick="toggleSinglePageMode()">Single Page</button>
+                    <label for="btnSingleMode_mobile">Single Mode:</label>
+                    <button id="btnSingleMode_mobile" onclick="toggleSingleMode()">Single Mode</button>
                 </div>
 
                 <div class="mobile-grid-settings">

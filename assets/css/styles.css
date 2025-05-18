@@ -513,6 +513,26 @@ button.active {
         margin-bottom: 12px;
         min-width: 0;
     }
+    .single-page-mode .grid-wrapper::-webkit-scrollbar {
+        width: 40px;
+        background: #222;
+    }
+    .single-page-mode .grid-wrapper::-webkit-scrollbar-thumb {
+        background: #444;
+        border-radius: 20px;
+        border: 8px solid #222;
+        min-height: 80px;
+    }
+    .single-page-mode .grid-wrapper::-webkit-scrollbar-thumb:hover {
+        background: #28a745;
+    }
+    .single-page-mode .grid-wrapper::-webkit-scrollbar-corner {
+        background: #222;
+    }
+    .single-page-mode .grid-wrapper {
+        scrollbar-width: 40px;
+        scrollbar-color: #444 #222;
+    }
 }
 
 /* Prevent pull-to-refresh on mobile */
@@ -575,9 +595,14 @@ body {
     padding: 0;
     margin: 0;
     transition: background 0.2s;
+    touch-action: manipulation;
 }
 .icon-btn:active {
     background: #28a745;
+    outline: none;
+}
+.icon-btn:focus {
+    background: #444;
     outline: none;
 }
 .icon-btn.no-active-effect:active {
@@ -747,7 +772,33 @@ body {
     overflow-y: auto;
     align-items: flex-start;
     height: auto;
+    padding-right: 20px;
 }
+
+/* Custom wide scrollbar for single page mode */
+.single-page-mode .grid-wrapper::-webkit-scrollbar {
+    width: 20px;
+    background: #222;
+}
+.single-page-mode .grid-wrapper::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 10px;
+    border: 4px solid #222;
+    min-height: 40px;
+}
+.single-page-mode .grid-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #28a745;
+}
+.single-page-mode .grid-wrapper::-webkit-scrollbar-corner {
+    background: #222;
+}
+
+/* For Firefox */
+.single-page-mode .grid-wrapper {
+    scrollbar-width: auto;
+    scrollbar-color: #444 #222;
+}
+
 .single-page-mode .grid {
     display: grid;
     flex-direction: unset;
@@ -757,4 +808,10 @@ body {
 .single-page-mode .widget-container {
     width: 100%;
     flex: 0 0 auto;
+}
+
+.toolbar-item:focus {
+    background: #444;
+    outline: none;
+    touch-action: manipulation;
 } 

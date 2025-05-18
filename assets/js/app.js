@@ -23,7 +23,8 @@ function updateUrlParams() {
     urlParams.set('cols', colsInput.value);
     urlParams.set('rows', rowsInput.value);
     urlParams.set('zoom', zoomLevel);
-    urlParams.set('singlePageMode', singlePageMode);
+    urlParams.set('singleMode', singleMode);
+    urlParams.set('volume', showVolume);
     
     // Update URL without page reload
     window.history.replaceState({}, '', `${window.location.pathname}?${urlParams.toString()}`);
@@ -39,7 +40,7 @@ function getSetting(key, defaultValue) {
                 return JSON.parse(urlValue);
             }
             // Handle boolean values
-            if (["macd", "sideToolbar", "topToolbar", "singlePageMode"].includes(key)) {
+            if (["macd", "sideToolbar", "topToolbar", "singleMode", "volume"].includes(key)) {
                 if (urlValue === 'false') return false;
                 return urlValue === 'true';
             }
@@ -75,7 +76,8 @@ let showTopToolbar = getSetting('topToolbar', true);
 let selectedInterval = getSetting('interval', "15");
 let zoomLevel = getSetting('zoom', 1);
 let currentPage = 0;
-let singlePageMode = getSetting('singlePageMode', false);
+let singleMode = getSetting('singleMode', false);
+let showVolume = getSetting('volume', false);
 
 // Get initial columns and rows based on screen width and saved settings
 function getInitialGridSize() {
@@ -150,6 +152,7 @@ function zoomIn() {
     zoomLevel = Math.round(zoomLevel * 10) / 10;
     applyZoom();
     updateUrlParams();
+    renderWidgets();
 }
 
 function zoomOut() {
@@ -157,6 +160,7 @@ function zoomOut() {
     zoomLevel = Math.round(zoomLevel * 10) / 10;
     applyZoom();
     updateUrlParams();
+    renderWidgets();
 }
 
 // Zoom value click-to-reset handler
@@ -168,6 +172,7 @@ function setupZoomValueReset() {
             applyZoom();
             saveSettings();
             updateUrlParams();
+            renderWidgets();
         }
     }
     const zoomValue = document.getElementById('zoomValue');
@@ -195,7 +200,8 @@ function saveSettings() {
     localStorage.setItem('gridCols', colsInput.value);
     localStorage.setItem('gridRows', rowsInput.value);
     localStorage.setItem('zoomLevel', zoomLevel);
-    localStorage.setItem('singlePageMode', JSON.stringify(singlePageMode));
+    localStorage.setItem('singleMode', JSON.stringify(singleMode));
+    localStorage.setItem('showVolume', JSON.stringify(showVolume));
     
     // Update URL parameters
     updateUrlParams();
@@ -209,13 +215,21 @@ function updateButtonStates() {
     }
     btnSideToolbar.classList.toggle('active', showSideToolbar);
     btnTopToolbar.classList.toggle('active', showTopToolbar);
-    const btnSinglePage = document.getElementById('btnSinglePage');
-    if (btnSinglePage) {
-        btnSinglePage.classList.toggle('active', singlePageMode);
+    const btnSingleMode = document.getElementById('btnSingleMode');
+    if (btnSingleMode) {
+        btnSingleMode.classList.toggle('active', singleMode);
     }
-    const btnSinglePageMobile = document.getElementById('btnSinglePage_mobile');
-    if (btnSinglePageMobile) {
-        btnSinglePageMobile.classList.toggle('active', singlePageMode);
+    const btnSingleModeMobile = document.getElementById('btnSingleMode_mobile');
+    if (btnSingleModeMobile) {
+        btnSingleModeMobile.classList.toggle('active', singleMode);
+    }
+    const btnVolume = document.getElementById('btnVolume');
+    if (btnVolume) {
+        btnVolume.classList.toggle('active', showVolume);
+    }
+    const btnVolumeMobile = document.getElementById('btnVolume_mobile');
+    if (btnVolumeMobile) {
+        btnVolumeMobile.classList.toggle('active', showVolume);
     }
 }
 
@@ -363,12 +377,17 @@ function renderWidgets() {
     }
 
     const toolbarHeight = toolbar ? toolbar.offsetHeight : 0;
-    if (singlePageMode) {
+    // Завжди явно встановлюємо кількість колонок
+    grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    // Розрахунок висоти рядка для обох режимів
+    let availableHeight = window.innerHeight - toolbarHeight;
+    let rowHeight = availableHeight / rows / zoomLevel;
+    grid.style.gridTemplateRows = 'unset';
+    if (singleMode) {
         pageSymbols = symbols;
         totalPages = 1;
         currentPage = 0;
         document.body.classList.add('single-page-mode');
-        // Set grid-wrapper height
         if (gridWrapper) {
             gridWrapper.style.height = `calc(100vh - ${toolbarHeight}px)`;
         }
@@ -380,23 +399,13 @@ function renderWidgets() {
             gridWrapper.style.height = '';
         }
     }
-    // Determine the number of rows for the grid
-    let gridRowsCount = singlePageMode ? Math.ceil(symbols.length / cols) : rows;
-    grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-    if (singlePageMode) {
-        const rowPx = `calc((100vh - ${toolbarHeight}px) / ${rows} / ${zoomLevel})`;
-        grid.style.gridTemplateRows = `repeat(${gridRowsCount}, ${rowPx})`;
-    } else {
-        grid.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-    }
     // Render widgets
     pageSymbols.forEach((s, index) => {
         const containerId = 'widget-' + index;
         const container = document.createElement('div');
         container.id = containerId;
         container.className = 'widget-container';
-        // Height is set by grid, reset height
-        container.style.height = '';
+        container.style.height = `${rowHeight}px`;
         grid.appendChild(container);
         new TradingView.widget({
             autosize: true,
@@ -411,13 +420,13 @@ function renderWidgets() {
             allow_symbol_change: true,
             save_image: false,
             studies: showMACD ? ["STD;MACD"] : [],
-            hide_volume: true,
+            hide_volume: !showVolume,
             container_id: containerId,
             support_host: "https://www.tradingview.com"
         });
     });
     // Update pagination display
-    const shouldShowPaginator = !singlePageMode && totalPages > 1;
+    const shouldShowPaginator = !singleMode && totalPages > 1;
     paginator.style.display = shouldShowPaginator ? 'flex' : 'none';
     pageInfo.textContent = `Page ${currentPage + 1} / ${totalPages}`;
 
@@ -466,8 +475,16 @@ function toggleTopToolbar() {
     updateUrlParams();
 }
 
-function toggleSinglePageMode() {
-    singlePageMode = !singlePageMode;
+function toggleSingleMode() {
+    singleMode = !singleMode;
+    saveSettings();
+    updateButtonStates();
+    renderWidgets();
+    updateUrlParams();
+}
+
+function toggleVolume() {
+    showVolume = !showVolume;
     saveSettings();
     updateButtonStates();
     renderWidgets();
@@ -529,7 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileColsInput.value = initialGrid.cols;
         mobileRowsInput.value = initialGrid.rows;
     }
-    // Ensure button state reflects persisted singlePageMode
+    // Ensure button state reflects persisted singleMode
     updateButtonStates();
     renderWidgets();
     setupTouchHandlers();
