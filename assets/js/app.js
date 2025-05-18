@@ -70,9 +70,9 @@ function getSetting(key, defaultValue) {
 
 // State management
 let symbols = getSetting('symbols', ["BTCUSDT", "XRPUSDT", "ETHUSDT", "SOLUSDT", "DOGEUSDT"]);
-let showMACD = getSetting('macd', true);
-let showSideToolbar = getSetting('sideToolbar', true);
-let showTopToolbar = getSetting('topToolbar', true);
+let showMACD = getSetting('macd', false);
+let showSideToolbar = getSetting('sideToolbar', false);
+let showTopToolbar = getSetting('topToolbar', false);
 let selectedInterval = getSetting('interval', "15");
 let zoomLevel = getSetting('zoom', 1);
 let currentPage = 0;
@@ -150,6 +150,7 @@ function applyZoom() {
 function zoomIn() {
     zoomLevel = Math.min(2, zoomLevel + 0.1);
     zoomLevel = Math.round(zoomLevel * 10) / 10;
+    if (isMobile() && zoomLevel > 1) zoomLevel = 1;
     applyZoom();
     updateUrlParams();
     renderWidgets();
@@ -158,6 +159,7 @@ function zoomIn() {
 function zoomOut() {
     zoomLevel = Math.max(0.5, zoomLevel - 0.1);
     zoomLevel = Math.round(zoomLevel * 10) / 10;
+    if (isMobile() && zoomLevel > 1) zoomLevel = 1;
     applyZoom();
     updateUrlParams();
     renderWidgets();
@@ -377,9 +379,9 @@ function renderWidgets() {
     }
 
     const toolbarHeight = toolbar ? toolbar.offsetHeight : 0;
-    // Завжди явно встановлюємо кількість колонок
+    // Always explicitly set the number of columns
     grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-    // Розрахунок висоти рядка для обох режимів
+    // Calculate row height for both modes
     let availableHeight = window.innerHeight - toolbarHeight;
     let rowHeight = availableHeight / rows / zoomLevel;
     grid.style.gridTemplateRows = 'unset';
@@ -389,7 +391,14 @@ function renderWidgets() {
         currentPage = 0;
         document.body.classList.add('single-page-mode');
         if (gridWrapper) {
-            gridWrapper.style.height = `calc(100vh - ${toolbarHeight}px)`;
+            // Set height only for desktop
+            if (!isMobile()) {
+                gridWrapper.style.height = `calc(100vh - ${toolbarHeight}px)`;
+            } else {
+                gridWrapper.style.height = '';
+            }
+            // Set right padding inversely proportional to zoomLevel
+            gridWrapper.style.paddingRight = (35 / zoomLevel) + 'px';
         }
     } else {
         totalPages = Math.ceil(symbols.length / pageSize);
@@ -425,10 +434,17 @@ function renderWidgets() {
             support_host: "https://www.tradingview.com"
         });
     });
+    // Add spacer in singleMode
+    if (singleMode) {
+        const spacer = document.createElement('div');
+        spacer.className = 'grid-spacer';
+        spacer.style.height = (20 * rows / zoomLevel) + 'px';
+        grid.appendChild(spacer);
+    }
     // Update pagination display
     const shouldShowPaginator = !singleMode && totalPages > 1;
     paginator.style.display = shouldShowPaginator ? 'flex' : 'none';
-    pageInfo.textContent = `Page ${currentPage + 1} / ${totalPages}`;
+    pageInfo.textContent = `${currentPage + 1} / ${totalPages}`;
 
     updateButtonStates();
     saveSettings();
@@ -548,6 +564,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // Ensure button state reflects persisted singleMode
     updateButtonStates();
+    if (isMobile() && zoomLevel > 1) {
+        zoomLevel = 1;
+        applyZoom();
+    }
     renderWidgets();
     setupTouchHandlers();
     setupZoomValueReset();
@@ -558,6 +578,10 @@ let resizeTimeout;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
+        if (isMobile() && zoomLevel > 1) {
+            zoomLevel = 1;
+            applyZoom();
+        }
         if (isMobile()) {
             if (window.mobileSettings) {
                 window.mobileSettings.updateSettingsUI();
@@ -573,7 +597,6 @@ function changeMobileCols(delta) {
     let value = parseInt(input.value) || 1;
     value += delta;
     if (value < 1) value = 1;
-    if (value > 6) value = 6;
     input.value = value;
     colsInput.value = value;
     updateGridSize();
@@ -584,7 +607,6 @@ function changeMobileRows(delta) {
     let value = parseInt(input.value) || 1;
     value += delta;
     if (value < 1) value = 1;
-    if (value > 6) value = 6;
     input.value = value;
     rowsInput.value = value;
     updateGridSize();

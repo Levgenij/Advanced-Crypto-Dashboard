@@ -78,6 +78,8 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 0;
+    align-items: stretch;
 }
 
 .grid {
@@ -85,9 +87,13 @@ html, body {
     gap: 0;
     width: 100%;
     height: 100%;
+    align-content: start;
+    min-height: 0;
 }
 
 .widget-container {
+    padding: 0 !important;
+    margin: 0 !important;
     width: 100%;
     height: 100%;
 }
@@ -437,11 +443,17 @@ button.active {
     }
 
     #widgetGrid {
-        gap: 2px;
+        gap: 0;
     }
 
     .widget-container {
-        min-height: 200px;
+        min-height: unset;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .widget-container > * {
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
     /* Adjust touch targets for mobile */
@@ -514,7 +526,7 @@ button.active {
         min-width: 0;
     }
     .single-page-mode .grid-wrapper::-webkit-scrollbar {
-        width: 40px;
+        /* width: 40px; */
         background: #222;
     }
     .single-page-mode .grid-wrapper::-webkit-scrollbar-thumb {
@@ -530,8 +542,18 @@ button.active {
         background: #222;
     }
     .single-page-mode .grid-wrapper {
-        scrollbar-width: 40px;
+        /* scrollbar-width: 40px; */
         scrollbar-color: #444 #222;
+    }
+
+    /* Single page mode mobile fix: allow full scroll and show all widgets */
+    .single-page-mode .grid {
+        height: auto !important;
+        min-height: 0 !important;
+    }
+    .single-page-mode .grid-wrapper {
+        overflow-y: auto;
+        padding-right: 35px;
     }
 }
 
@@ -777,14 +799,14 @@ body {
 
 /* Custom wide scrollbar for single page mode */
 .single-page-mode .grid-wrapper::-webkit-scrollbar {
-    width: 20px;
+    /* width: 60px; */
     background: #222;
 }
 .single-page-mode .grid-wrapper::-webkit-scrollbar-thumb {
     background: #444;
-    border-radius: 10px;
-    border: 4px solid #222;
-    min-height: 40px;
+    border-radius: 30px;
+    border: 16px solid #222;
+    min-height: 120px;
 }
 .single-page-mode .grid-wrapper::-webkit-scrollbar-thumb:hover {
     background: #28a745;
@@ -795,8 +817,9 @@ body {
 
 /* For Firefox */
 .single-page-mode .grid-wrapper {
-    scrollbar-width: auto;
+    /* scrollbar-width: 60px; */
     scrollbar-color: #444 #222;
+    padding-right: 50px;
 }
 
 .single-page-mode .grid {
@@ -814,4 +837,11 @@ body {
     background: #444;
     outline: none;
     touch-action: manipulation;
+}
+
+.grid-spacer {
+    width: 100%;
+    height: 80px;
+    pointer-events: none;
+    background: transparent;
 } 
