@@ -193,18 +193,17 @@ function setupZoomValueReset() {
 
 // Settings management
 function saveSettings() {
-    // Save to localStorage
-    localStorage.setItem('cryptoSymbols', JSON.stringify(symbols));
-    localStorage.setItem('showMACD', JSON.stringify(showMACD));
-    localStorage.setItem('showSideToolbar', JSON.stringify(showSideToolbar));
-    localStorage.setItem('showTopToolbar', JSON.stringify(showTopToolbar));
-    localStorage.setItem('cryptoInterval', selectedInterval);
-    localStorage.setItem('gridCols', colsInput.value);
-    localStorage.setItem('gridRows', rowsInput.value);
-    localStorage.setItem('zoomLevel', zoomLevel);
+    // Save to localStorage using the same keys as getSetting
+    localStorage.setItem('symbols', JSON.stringify(symbols));
+    localStorage.setItem('macd', JSON.stringify(showMACD));
+    localStorage.setItem('sideToolbar', JSON.stringify(showSideToolbar));
+    localStorage.setItem('topToolbar', JSON.stringify(showTopToolbar));
+    localStorage.setItem('interval', selectedInterval);
+    localStorage.setItem('cols', colsInput.value);
+    localStorage.setItem('rows', rowsInput.value);
+    localStorage.setItem('zoom', zoomLevel);
     localStorage.setItem('singleMode', JSON.stringify(singleMode));
-    localStorage.setItem('showVolume', JSON.stringify(showVolume));
-    
+    localStorage.setItem('volume', JSON.stringify(showVolume));
     // Update URL parameters
     updateUrlParams();
 }
