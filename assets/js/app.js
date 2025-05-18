@@ -167,6 +167,10 @@ function saveSettings() {
 
 function updateButtonStates() {
     btnMACD.classList.toggle('active', showMACD);
+    const btnMACD_mobile = document.getElementById('btnMACD_mobile');
+    if (btnMACD_mobile) {
+        btnMACD_mobile.classList.toggle('active', showMACD);
+    }
     btnSideToolbar.classList.toggle('active', showSideToolbar);
     btnTopToolbar.classList.toggle('active', showTopToolbar);
 }
@@ -374,6 +378,8 @@ function nextPage() {
 // UI Controls
 function toggleMACD() {
     showMACD = !showMACD;
+    saveSettings();
+    updateButtonStates();
     renderWidgets();
     updateUrlParams();
 }
@@ -391,7 +397,20 @@ function toggleTopToolbar() {
 }
 
 function changeInterval() {
-    selectedInterval = intervalSelect.value;
+    // Determine the source of interval
+    let newInterval;
+    if (isMobile()) {
+        const mobileIntervalSelect = document.getElementById('mobileIntervalSelect');
+        newInterval = mobileIntervalSelect ? mobileIntervalSelect.value : selectedInterval;
+    } else {
+        newInterval = intervalSelect.value;
+    }
+    selectedInterval = newInterval;
+    // Synchronize both selectors
+    if (intervalSelect) intervalSelect.value = selectedInterval;
+    const mobileIntervalSelect = document.getElementById('mobileIntervalSelect');
+    if (mobileIntervalSelect) mobileIntervalSelect.value = selectedInterval;
+    saveSettings();
     renderWidgets();
     updateUrlParams();
 }

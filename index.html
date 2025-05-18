@@ -1,181 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Advanced Crypto Dashboard</title>
-    
+
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#1e1e1e">
     <meta name="description" content="Advanced Crypto Dashboard with TradingView integration">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="CryptoDash">
-    
+
     <link rel="icon" type="image/png" sizes="48x48" href="assets/icons/favicon.png">
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
-    
+
     <!-- Apple Touch Icons -->
     <link rel="apple-touch-icon" href="/assets/icons/icon-152x152.png">
     <link rel="apple-touch-icon" sizes="152x152" href="/assets/icons/icon-152x152.png">
     <link rel="apple-touch-icon" sizes="192x192" href="assets/icons/icon-192x192.png">
     <link rel="apple-touch-icon" sizes="384x384" href="assets/icons/icon-384x384.png">
     <link rel="apple-touch-icon" sizes="512x512" href="assets/icons/icon-512x512.png">
-    
+
     <!-- Splash Screen Images -->
     <link rel="apple-touch-startup-image" href="assets/icons/icon-512x512.png">
-    
+
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
+
 <body>
 
-<!-- Desktop Toolbar (hidden on mobile) -->
-<div class="toolbar desktop-only">
-    <input type="text" id="symbolInput" placeholder="BTCUSDT" onkeydown="handleInputKeydown(event)"/>
-    <button onclick="addSymbol()">Add</button>
-    <button onclick="clearSymbols()">Clear</button>
-    <button id="btnMACD" onclick="toggleMACD()">MACD</button>
-    <button id="btnSideToolbar" onclick="toggleSideToolbar()">Side</button>
-    <button id="btnTopToolbar" onclick="toggleTopToolbar()">Top</button>
-    <label>Interval:</label>
-    <select id="intervalSelect" onchange="changeInterval()">
-        <option value="1">1m</option>
-        <option value="3">3m</option>
-        <option value="5">5m</option>
-        <option value="15">15m</option>
-        <option value="30">30m</option>
-        <option value="60">1h</option>
-        <option value="240">4h</option>
-        <option value="D">1D</option>
-    </select>
-    <label>Cols:</label>
-    <input type="number" id="colsInput" min="1" value="2" style="width:40px" onchange="renderWidgets()">
-    <label>Rows:</label>
-    <input type="number" id="rowsInput" min="1" value="2" style="width:40px" onchange="renderWidgets()">
-    <button onclick="zoomOut()">-</button>
-    <button onclick="zoomIn()">+</button>
+    <!-- Desktop Toolbar (hidden on mobile) -->
+    <div class="toolbar desktop-only">
+        <input type="text" id="symbolInput" class="toolbar-item" placeholder="BTCUSDT" onkeydown="handleInputKeydown(event)" />
+        <button class="toolbar-item" onclick="addSymbol()">Add</button>
+        <button class="toolbar-item" onclick="clearSymbols()">Clear</button>
+        <button id="btnMACD" class="toolbar-item" onclick="toggleMACD()">MACD</button>
+        <button id="btnSideToolbar" class="toolbar-item" onclick="toggleSideToolbar()">Side</button>
+        <button id="btnTopToolbar" class="toolbar-item" onclick="toggleTopToolbar()">Top</button>
+        <label>Interval:</label>
+        <select id="intervalSelect" class="toolbar-item" onchange="changeInterval()">
+            <option value="1">1m</option>
+            <option value="3">3m</option>
+            <option value="5">5m</option>
+            <option value="5">10m</option>
+            <option value="15">15m</option>
+            <option value="30">30m</option>
+            <option value="60">1h</option>
+            <option value="240">4h</option>
+            <option value="D">1D</option>
+            <option value="M">1M</option>
+            <option value="3M">3M</option>
+            <option value="6M">6M</option>
+            <option value="12M">12M</option>
+        </select>
+        <label>Cols:</label>
+        <input type="number" id="colsInput" class="toolbar-item" min="1" value="2" onchange="renderWidgets()">
+        <label>Rows:</label>
+        <input type="number" id="rowsInput" class="toolbar-item" min="1" value="2" onchange="renderWidgets()">
+        <button class="toolbar-item" onclick="zoomOut()">-</button>
+        <button class="toolbar-item" onclick="zoomIn()">+</button>
 
-    <div class="symbol-list" id="symbolList"></div>
-</div>
+        <div class="symbol-list" id="symbolList"></div>
+    </div>
 
-<!-- Mobile Menu Button -->
-<button id="mobileMenuButton" class="mobile-menu-button">
-    <span class="menu-icon">☰</span>
-</button>
+    <!-- Mobile Menu Button -->
+    <button id="mobileMenuButton" class="mobile-menu-button">
+        <span class="menu-icon">☰</span>
+    </button>
 
-<!-- Mobile Settings Popup -->
-<div id="mobileSettingsPopup" class="mobile-settings-popup">
-    <div class="mobile-settings-content">
-        <div class="mobile-settings-header">
-            <h2>Settings</h2>
-            <button class="close-settings" onclick="mobileSettings.closeSettings()">×</button>
-        </div>
-        
-        <div class="mobile-settings-section">
-            <h3>Symbols</h3>
-            <div class="mobile-symbol-input-wrapper">
-                <input type="text" id="mobileSymbolInput" placeholder="BTCUSDT" onkeydown="handleInputKeydown(event)" />
-                <button class="icon-btn no-active-effect" onclick="addSymbol()" title="Add">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                </button>
-                <button class="icon-btn" onclick="clearSymbols()" title="Clear All">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                </button>
-            </div>
-            <div id="mobileSymbolsList" class="mobile-symbols-list"></div>
-        </div>
-
-        <div class="mobile-settings-section">
-            <h3>Display Settings</h3>
-
-            <div class="mobile-select-group">
-                <label>Interval:</label>
-                <select id="mobileIntervalSelect" onchange="changeInterval()">
-                    <option value="1">1m</option>
-                    <option value="3">3m</option>
-                    <option value="5">5m</option>
-                    <option value="15">15m</option>
-                    <option value="30">30m</option>
-                    <option value="60">1h</option>
-                    <option value="240">4h</option>
-                    <option value="D">1D</option>
-                </select>
+    <!-- Mobile Settings Popup -->
+    <div id="mobileSettingsPopup" class="mobile-settings-popup">
+        <div class="mobile-settings-content">
+            <div class="mobile-settings-header">
+                <h2>Settings</h2>
+                <button class="close-settings" onclick="mobileSettings.closeSettings()">×</button>
             </div>
 
-            <div class="mobile-grid-settings">
-                <div class="mobile-input-group">
-                    <label>Columns:</label>
-                    <div class="input-plus-minus">
-                        <button type="button" class="icon-btn" onclick="changeMobileCols(-1)">-</button>
-                        <input type="number" id="mobileColsInput" min="1" value="2" onchange="updateGridSize()">
-                        <button type="button" class="icon-btn" onclick="changeMobileCols(1)">+</button>
+            <div class="mobile-settings-section">
+                <h3>Symbols</h3>
+                <div class="mobile-symbol-input-wrapper">
+                    <input type="text" id="mobileSymbolInput" placeholder="BTCUSDT"
+                        onkeydown="handleInputKeydown(event)" />
+                    <button class="icon-btn no-active-effect" onclick="addSymbol()" title="Add">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </button>
+                    <button class="icon-btn" onclick="clearSymbols()" title="Clear All">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="mobileSymbolsList" class="mobile-symbols-list"></div>
+            </div>
+
+            <div class="mobile-settings-section">
+                <h3>Display Settings</h3>
+
+                <div class="mobile-select-group two-col-grid">
+                    <label for="btnMACD_mobile">Indicators:</label>
+                    <button id="btnMACD_mobile" onclick="toggleMACD()">MACD</button>
+                </div>
+
+                <div class="mobile-select-group two-col-grid">
+                    <label for="mobileIntervalSelect">Interval:</label>
+                    <select id="mobileIntervalSelect" onchange="changeInterval()">
+                        <option value="1">1m</option>
+                        <option value="3">3m</option>
+                        <option value="5">5m</option>
+                        <option value="5">10m</option>
+                        <option value="15">15m</option>
+                        <option value="30">30m</option>
+                        <option value="60">1h</option>
+                        <option value="240">4h</option>
+                        <option value="D">1D</option>
+                        <option value="M">1M</option>
+                        <option value="3M">3M</option>
+                        <option value="6M">6M</option>
+                        <option value="12M">12M</option>
+                    </select>
+                </div>
+
+                <div class="mobile-grid-settings">
+                    <div class="mobile-input-group">
+                        <label>Columns:</label>
+                        <div class="input-plus-minus">
+                            <button type="button" class="icon-btn" onclick="changeMobileCols(-1)">-</button>
+                            <input type="number" id="mobileColsInput" min="1" value="2" onchange="updateGridSize()">
+                            <button type="button" class="icon-btn" onclick="changeMobileCols(1)">+</button>
+                        </div>
+                    </div>
+                    <div class="mobile-input-group">
+                        <label>Rows:</label>
+                        <div class="input-plus-minus">
+                            <button type="button" class="icon-btn" onclick="changeMobileRows(-1)">-</button>
+                            <input type="number" id="mobileRowsInput" min="1" value="2" onchange="updateGridSize()">
+                            <button type="button" class="icon-btn" onclick="changeMobileRows(1)">+</button>
+                        </div>
                     </div>
                 </div>
-                <div class="mobile-input-group">
-                    <label>Rows:</label>
-                    <div class="input-plus-minus">
-                        <button type="button" class="icon-btn" onclick="changeMobileRows(-1)">-</button>
-                        <input type="number" id="mobileRowsInput" min="1" value="2" onchange="updateGridSize()">
-                        <button type="button" class="icon-btn" onclick="changeMobileRows(1)">+</button>
-                    </div>
-                </div>
-            </div>
 
-            <div class="mobile-zoom-controls-row">
-                <button class="icon-btn" onclick="zoomOut()" aria-label="Zoom out">-</button>
-                <span class="zoom-label">Zoom</span>
-                <button class="icon-btn" onclick="zoomIn()" aria-label="Zoom in">+</button>
+                <div class="mobile-zoom-controls-row">
+                    <button class="icon-btn" onclick="zoomOut()" aria-label="Zoom out">-</button>
+                    <span class="zoom-label">Zoom</span>
+                    <button class="icon-btn" onclick="zoomIn()" aria-label="Zoom in">+</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div id="scaleContainer">
-    <div class="grid-wrapper">
-        <div id="widgetGrid" class="grid"></div>
+    <div id="scaleContainer">
+        <div class="grid-wrapper">
+            <div id="widgetGrid" class="grid"></div>
+        </div>
     </div>
-</div>
 
-<!-- Paginator -->
-<div id="paginator" class="paginator">
-    <button class="page-btn" onclick="prevPage()" aria-label="Previous page">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-    <span id="pageInfo">Page 1</span>
-    <button class="page-btn" onclick="nextPage()" aria-label="Next page">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-</div>
-
-<div id="widgetPopup" class="widget-popup" style="display: none;">
-    <div class="popup-content">
-        <button class="close-popup" onclick="closePopup()">×</button>
-        <div id="popupWidgetContainer"></div>
+    <!-- Paginator -->
+    <div id="paginator" class="paginator">
+        <button class="page-btn" onclick="prevPage()" aria-label="Previous page">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+        </button>
+        <span id="pageInfo">Page 1</span>
+        <button class="page-btn" onclick="nextPage()" aria-label="Next page">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+        </button>
     </div>
-</div>
 
-<script src="https://s3.tradingview.com/tv.js"></script>
-<script src="assets/js/app.js"></script>
-<script src="assets/js/mobile-settings.js"></script>
+    <div id="widgetPopup" class="widget-popup" style="display: none;">
+        <div class="popup-content">
+            <button class="close-popup" onclick="closePopup()">×</button>
+            <div id="popupWidgetContainer"></div>
+        </div>
+    </div>
 
-<!-- Service Worker Registration -->
-<script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js')
-                .then((registration) => {
-                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                })
-                .catch((error) => {
-                    console.log('ServiceWorker registration failed: ', error);
-                });
-        });
-    }
-</script>
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/mobile-settings.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
 </body>
+
 </html>

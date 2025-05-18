@@ -110,11 +110,17 @@ class MobileSettings {
 
     updateSettingsUI() {        
         // Update interval select
-        document.getElementById('mobileIntervalSelect').value = selectedInterval;
-        
+        const mobileIntervalSelect = document.getElementById('mobileIntervalSelect');
+        if (mobileIntervalSelect) {
+            mobileIntervalSelect.value = selectedInterval;
+        }
         // Update grid size inputs
         document.getElementById('mobileColsInput').value = colsInput.value;
         document.getElementById('mobileRowsInput').value = rowsInput.value;
+        // Update MACD button state
+        if (typeof updateButtonStates === 'function') {
+            updateButtonStates();
+        }
     }
 }
 

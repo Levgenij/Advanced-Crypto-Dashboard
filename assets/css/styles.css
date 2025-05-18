@@ -19,17 +19,35 @@ html, body {
 .toolbar {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 4px;
     padding: 5px 10px;
     background: #222;
     align-items: center;
     font-size: 12px;
 }
 
+.toolbar .toolbar-item,
+.toolbar .symbol-tag {
+    height: 30px;
+    min-height: 30px;
+    max-height: 30px;
+    padding: 0 12px;
+    font-size: 12px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+}
+
+.toolbar .toolbar-item:hover,
+.toolbar .symbol-tag:hover {
+    background: #333232;
+}
+
 .symbol-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 3px;
+    gap: 4px;
 }
 
 .symbol-tag {
@@ -41,6 +59,17 @@ html, body {
     align-items: center;
     font-size: 12px;
     cursor: pointer;
+}
+
+.symbol-tag button{
+    color: white;
+    background: rgb(92, 92, 92);
+    margin-left: 4px;
+    margin-right: -6px;
+}
+
+.symbol-tag button:hover{
+    color: red;
 }
 
 .grid-wrapper {
@@ -278,6 +307,21 @@ button.active {
     margin-bottom: 20px;
 }
 
+.mobile-select-group.two-col-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.mobile-select-group.two-col-grid button,
+.mobile-select-group.two-col-grid select {
+    justify-self: start;
+    width: 100%;
+    min-width: 0;
+    font-size: 16px;
+}
 
 .mobile-select-group select {
     width: 100%;
@@ -411,6 +455,16 @@ button.active {
     select {
         font-size: 16px !important;
     }
+
+    .toolbar .toolbar-item,
+    .toolbar .symbol-tag {
+        height: auto;
+        min-height: unset;
+        max-height: unset;
+        font-size: 16px;
+        padding: 2px 5px;
+        border-radius: 3px;
+    }
 }
 
 /* Prevent pull-to-refresh on mobile */
@@ -474,12 +528,11 @@ body {
     margin: 0;
     transition: background 0.2s;
 }
-.icon-btn:active, .icon-btn:focus {
+.icon-btn:active {
     background: #28a745;
     outline: none;
 }
-.icon-btn.no-active-effect:active,
-.icon-btn.no-active-effect:focus {
+.icon-btn.no-active-effect:active {
     background: #444;
 }
 .icon-btn svg {
@@ -547,4 +600,26 @@ body {
     font-size: 1.1em;
     font-weight: 500;
     letter-spacing: 1px;
+}
+
+/* Active state for MACD button */
+#btnMACD.active,
+#btnMACD_mobile.active {
+    background: #28a745 !important;
+    color: #fff !important;
+}
+
+.toolbar #colsInput,
+.toolbar #rowsInput {
+    width: 50px;
+    min-width: 50px;
+    max-width: 50px;
+    padding-right: 5px;
+    text-align: center;
+}
+
+.toolbar #symbolInput {
+    width: 90px;
+    min-width: 90px;
+    max-width: 90px;
 } 
