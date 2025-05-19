@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     height: 100%;
@@ -61,14 +62,14 @@ html, body {
     cursor: pointer;
 }
 
-.symbol-tag button{
+.symbol-tag button {
     color: white;
     background: rgb(92, 92, 92);
     margin-left: 4px;
     margin-right: -6px;
 }
 
-.symbol-tag button:hover{
+.symbol-tag button:hover {
     /* color: red; */
 }
 
@@ -98,7 +99,9 @@ html, body {
     height: 100%;
 }
 
-input, button, select {
+input,
+button,
+select {
     padding: 2px 5px;
     border: none;
     background: #444;
@@ -163,7 +166,7 @@ button.active {
     color: white;
     font-size: 24px;
     z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     border: none;
     cursor: pointer;
     touch-action: manipulation;
@@ -182,7 +185,7 @@ button.active {
     top: 0;
     left: 0;
     width: 100%;
-    background: rgba(0,0,0,0.9);
+    background: rgba(0, 0, 0, 0.9);
     z-index: 1001;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -197,7 +200,7 @@ button.active {
     height: 100vh;
     overflow-y: auto;
     scrollbar-width: none;
-    -ms-overflow-style: none; 
+    -ms-overflow-style: none;
 }
 
 .mobile-settings-content::-webkit-scrollbar {
@@ -308,7 +311,7 @@ button.active {
     min-height: 44px;
 }
 
-.mobile-select-group{
+.mobile-select-group {
     margin-bottom: 20px;
 }
 
@@ -404,10 +407,15 @@ button.active {
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0.8;
+    opacity: 0.7;
+    transition: opacity 0.2s;
 }
 
-#pageInfo{
+.paginator:hover {
+    opacity: 1;
+}
+
+#pageInfo {
     padding: 0 5px;
 }
 
@@ -451,13 +459,14 @@ button.active {
         padding: 0 !important;
         margin: 0 !important;
     }
-    .widget-container > * {
+
+    .widget-container>* {
         margin: 0 !important;
         padding: 0 !important;
     }
 
     /* Adjust touch targets for mobile */
-    button, 
+    button,
     input[type="text"],
     select {
         min-height: 44px;
@@ -487,6 +496,7 @@ button.active {
         height: 44px;
         margin-bottom: 8px;
     }
+
     .zoom-group .icon-btn,
     .zoom-group .zoom-value {
         height: 44px;
@@ -497,24 +507,28 @@ button.active {
         width: 100%;
         box-sizing: border-box;
     }
+
     .zoom-group .icon-btn {
         min-width: 44px;
         max-width: 44px;
         width: 44px;
         padding: 0;
     }
+
     .zoom-group .zoom-value {
         min-width: 0;
         max-width: none;
         flex: 1 1 auto;
         justify-content: center;
     }
+
     .mobile-zoom-controls-row {
         flex-direction: column;
         align-items: stretch;
         gap: 0;
         margin-top: 20px;
     }
+
     .zoom-label {
         text-align: left;
         font-size: 1.1em;
@@ -525,22 +539,32 @@ button.active {
         margin-bottom: 12px;
         min-width: 0;
     }
-    .single-page-mode .grid-wrapper::-webkit-scrollbar {
-        /* width: 40px; */
-        background: #222;
+
+    .single-page-mode .grid-wrapper {
+        overflow-y: auto;
+        padding-right: 35px;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
     }
+    .single-page-mode .grid-wrapper::-webkit-scrollbar {
+        display: none; /* Chrome/Safari/Webkit */
+    }
+
     .single-page-mode .grid-wrapper::-webkit-scrollbar-thumb {
         background: #444;
         border-radius: 20px;
         border: 8px solid #222;
         min-height: 80px;
     }
+
     .single-page-mode .grid-wrapper::-webkit-scrollbar-thumb:hover {
         background: #28a745;
     }
+
     .single-page-mode .grid-wrapper::-webkit-scrollbar-corner {
         background: #222;
     }
+
     .single-page-mode .grid-wrapper {
         /* scrollbar-width: 40px; */
         scrollbar-color: #444 #222;
@@ -551,6 +575,7 @@ button.active {
         height: auto !important;
         min-height: 0 !important;
     }
+
     .single-page-mode .grid-wrapper {
         overflow-y: auto;
         padding-right: 35px;
@@ -619,17 +644,21 @@ body {
     transition: background 0.2s;
     touch-action: manipulation;
 }
+
 .icon-btn:active {
     background: #28a745;
     outline: none;
 }
+
 .icon-btn:focus {
     background: #444;
     outline: none;
 }
+
 .icon-btn.no-active-effect:active {
     background: #444;
 }
+
 .icon-btn svg {
     display: block;
     width: 20px;
@@ -736,6 +765,7 @@ body {
     transition: background 0.15s;
     cursor: pointer;
 }
+
 .zoom-value:hover {
     background: #333232;
 }
@@ -748,11 +778,13 @@ body {
     overflow: hidden;
     box-shadow: none;
 }
-.zoom-group > * {
+
+.zoom-group>* {
     margin: 0 !important;
     border: none;
     box-shadow: none;
 }
+
 .zoom-group .toolbar-item,
 .zoom-group .icon-btn,
 .zoom-group .zoom-value {
@@ -767,14 +799,17 @@ body {
     font-size: 12px;
     transition: background 0.15s;
 }
+
 .zoom-group .toolbar-item:first-child,
 .zoom-group .icon-btn:first-child {
     border-radius: 5px 0 0 5px;
 }
+
 .zoom-group .toolbar-item:last-child,
 .zoom-group .icon-btn:last-child {
     border-radius: 0 5px 5px 0;
 }
+
 .zoom-group .zoom-value {
     border-radius: 0;
     border-left: 1px solid #333232;
@@ -785,6 +820,7 @@ body {
     align-items: center;
     justify-content: center;
 }
+
 .zoom-group .zoom-value:hover {
     background: #333232;
 }
@@ -802,15 +838,18 @@ body {
     /* width: 60px; */
     background: #222;
 }
+
 .single-page-mode .grid-wrapper::-webkit-scrollbar-thumb {
     background: #444;
     border-radius: 30px;
     border: 16px solid #222;
     min-height: 120px;
 }
+
 .single-page-mode .grid-wrapper::-webkit-scrollbar-thumb:hover {
     background: #28a745;
 }
+
 .single-page-mode .grid-wrapper::-webkit-scrollbar-corner {
     background: #222;
 }
@@ -828,6 +867,7 @@ body {
     height: auto;
     min-height: 0;
 }
+
 .single-page-mode .widget-container {
     width: 100%;
     flex: 0 0 auto;
@@ -844,4 +884,52 @@ body {
     height: 80px;
     pointer-events: none;
     background: transparent;
-} 
+}
+
+@media (max-width: 768px) {
+
+    #singleScrollButton {
+        position: fixed;
+        top: 50%;
+        right: 2px;
+        transform: translateY(-50%);
+        width: 25px;
+        height: 10vh;
+        min-height: 120px;
+        max-height: 20vh;
+        background: rgba(34, 34, 34, 0.7);
+        border-radius: 8px;
+        z-index: 1200;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.2s;
+    }
+
+    #singleScrollButton .scroll-thumb {
+        position: absolute;
+        left: 1px;
+        width: 23px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        transition: background 0.2s;
+        cursor: grab;
+    }
+
+    #singleScrollButton .scroll-thumb:active {
+        background: rgba(255,255,255,0.35);
+        cursor: grabbing;
+    }
+
+    #singleScrollButton .scroll-thumb.active {
+        background: rgba(255,255,255,0.35) !important;
+    }
+}
+
+.single-page-mode .grid-wrapper {
+    padding-right: 0 !important;
+}

@@ -360,6 +360,8 @@ function clearSymbols() {
 }
 
 // Widget management
+let lastScrollWrapper = null;
+
 function renderWidgets() {
     grid.innerHTML = '';
     const cols = parseInt(colsInput.value);
@@ -396,8 +398,20 @@ function renderWidgets() {
             } else {
                 gridWrapper.style.height = '';
             }
-            // Set right padding inversely proportional to zoomLevel
-            gridWrapper.style.paddingRight = (35 / zoomLevel) + 'px';
+            // Remove right padding logic
+            gridWrapper.style.paddingRight = '';
+            // Add scroll event listener for thumb sync only on mobile
+            if (lastScrollWrapper && lastScrollWrapper !== gridWrapper) {
+                lastScrollWrapper.removeEventListener('scroll', lastScrollWrapper._singleScrollHandler);
+            }
+            if (isMobile()) {
+                const handler = () => updateSingleScrollButton(gridWrapper);
+                gridWrapper.addEventListener('scroll', handler);
+                gridWrapper._singleScrollHandler = handler;
+                lastScrollWrapper = gridWrapper;
+            } else {
+                lastScrollWrapper = null;
+            }
         }
     } else {
         totalPages = Math.ceil(symbols.length / pageSize);
@@ -405,7 +419,14 @@ function renderWidgets() {
         document.body.classList.remove('single-page-mode');
         if (gridWrapper) {
             gridWrapper.style.height = '';
+            gridWrapper.style.paddingRight = '';
+            // Remove scroll event listener if present
+            if (gridWrapper._singleScrollHandler) {
+                gridWrapper.removeEventListener('scroll', gridWrapper._singleScrollHandler);
+                delete gridWrapper._singleScrollHandler;
+            }
         }
+        lastScrollWrapper = null;
     }
     // Render widgets
     pageSymbols.forEach((s, index) => {
@@ -448,6 +469,7 @@ function renderWidgets() {
     updateButtonStates();
     saveSettings();
     applyZoom();
+    updateSingleScrollButton(gridWrapper);
 }
 
 // Pagination
@@ -609,4 +631,79 @@ function changeMobileRows(delta) {
     input.value = value;
     rowsInput.value = value;
     updateGridSize();
+}
+
+function updateSingleScrollButton(gridWrapper) {
+    let btn = document.getElementById('singleScrollButton');
+    if (!singleMode || !isMobile() || !gridWrapper || gridWrapper.scrollHeight <= gridWrapper.clientHeight) {
+        if (btn) btn.remove();
+        return;
+    }
+    if (!btn) {
+        btn = document.createElement('div');
+        btn.id = 'singleScrollButton';
+        btn.title = 'Scroll vertically';
+        btn.innerHTML = '<div class="scroll-thumb"></div>';
+        document.body.appendChild(btn);
+        // Drag logic
+        let isDragging = false;
+        let startY = 0;
+        let startScroll = 0;
+        btn.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            startY = e.clientY;
+            startScroll = gridWrapper.scrollTop;
+            document.body.style.userSelect = 'none';
+            const thumb = btn.querySelector('.scroll-thumb');
+            if (thumb) thumb.classList.add('active');
+        });
+        document.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
+            const delta = e.clientY - startY;
+            const maxScroll = gridWrapper.scrollHeight - gridWrapper.clientHeight;
+            gridWrapper.scrollTop = Math.min(Math.max(startScroll + delta * (maxScroll / (window.innerHeight - 100)) * 1.2, 0), maxScroll);
+        });
+        document.addEventListener('mouseup', function() {
+            isDragging = false;
+            document.body.style.userSelect = '';
+            const thumb = btn.querySelector('.scroll-thumb');
+            if (thumb) thumb.classList.remove('active');
+        });
+        // Touch support
+        btn.addEventListener('touchstart', function(e) {
+            isDragging = true;
+            startY = e.touches[0].clientY;
+            startScroll = gridWrapper.scrollTop;
+            const thumb = btn.querySelector('.scroll-thumb');
+            if (thumb) thumb.classList.add('active');
+        });
+        document.addEventListener('touchmove', function(e) {
+            if (!isDragging) return;
+            const delta = e.touches[0].clientY - startY;
+            const maxScroll = gridWrapper.scrollHeight - gridWrapper.clientHeight;
+            gridWrapper.scrollTop = Math.min(Math.max(startScroll + delta * (maxScroll / (window.innerHeight - 100)) * 2, 0), maxScroll);
+        });
+        document.addEventListener('touchend', function() {
+            isDragging = false;
+            const thumb = btn.querySelector('.scroll-thumb');
+            if (thumb) thumb.classList.remove('active');
+        });
+        // Click to scroll up/down
+        btn.addEventListener('click', function(e) {
+            if (e.target.classList.contains('scroll-thumb')) return;
+            const rect = btn.getBoundingClientRect();
+            const y = e.clientY - rect.top;
+            const percent = y / rect.height;
+            const maxScroll = gridWrapper.scrollHeight - gridWrapper.clientHeight;
+            gridWrapper.scrollTop = percent * maxScroll;
+        });
+    }
+    // Update thumb position/size
+    const thumb = btn.querySelector('.scroll-thumb');
+    if (thumb) {
+        const percent = gridWrapper.scrollTop / (gridWrapper.scrollHeight - gridWrapper.clientHeight);
+        const thumbHeight = Math.max(40, (gridWrapper.clientHeight / gridWrapper.scrollHeight) * btn.offsetHeight);
+        thumb.style.height = thumbHeight + 'px';
+        thumb.style.top = percent * (btn.offsetHeight - thumbHeight) + 'px';
+    }
 } 
